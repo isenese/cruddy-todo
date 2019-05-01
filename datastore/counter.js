@@ -25,7 +25,7 @@ const readCounter = (callback) => {
   });
 };
 
-const writeCounter = (count, callback) => {
+const writeCounter = (count, callback = ()=>{}) => {
   var counterString = zeroPaddedNumber(count);
   fs.writeFile(exports.counterFile, counterString, (err) => {
     if (err) {
@@ -38,8 +38,24 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
+exports.getNextUniqueId = (callback = () => {}) => {
+  
+  
+  readCounter((err, num) => {
+    num = num + 1
+    writeCounter(num, (err, counterString) =>{
+      //console.log(num)
+      counter = counterString
+      //console.log(counter)
+      callback(null, counter)
+    })
+  })
+  
+  
+
+  
+  //update the file holding the current highest id number
+ 
   return zeroPaddedNumber(counter);
 };
 
